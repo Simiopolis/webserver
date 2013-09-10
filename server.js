@@ -38,5 +38,5 @@ require('./routes')(app);
 // start server
 // aws -> 80 default http connection
 // sudo nohup node server.js ------> log in as admin to run for AWS
-server.listen(80);
-console.log('Listening on port 80');
+server.listen(1111);
+console.log('Listening on port 1111');
