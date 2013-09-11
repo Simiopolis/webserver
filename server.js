@@ -1,8 +1,12 @@
 // use express for routing
 var express = require('express')
   , http = require ('http')
-  , app = express()
+  , app = module.exports = express()
   , server = http.createServer(app);
+
+var routes = require('./routes');
+var api = require('./routes/api_temp');
+
 //  , passport = require('passport')
 // connect to mongoDB
 var databaseUrl = "inqueue";
@@ -14,25 +18,27 @@ app.db = require('mongojs').connect(databaseUrl, collections);
 
 
 // set up static routes
-app.use(express.static(__dirname + '/public'));
-app.use(express.bodyParser());
-
-/*
-//setting up passport.js
-app.configure(function() {
-  app.use(express.static(__dirname + '/public'));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.session({ secret: 'uhpnext' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
+app.configure(function(){
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.logger());
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(express.cookieParser());
+    app.use(express.session({ secret: 'secret' }));
+    app.use(express.static(__dirname + '/public'));
+//    app.use(passport.initialize());
+//    app.use(passport.session());
+    app.use(app.router);
 });
-*/
 
 // set up routes in the routes/ folder
 // all the js files in routes
-require('./routes')(app);
+app.get('/', routes.index);
+
+// API Routes
+app.get('/api/ping/', api.ping);
+
 //require('./routes/passport')(passport, config);
 
 // start server
